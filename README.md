@@ -1,6 +1,8 @@
 # Auto Sprinkler
 Auto Sprinkler Project, made by Arduino
 
+## Last update: 2018.6.16
+
 # Abstract
 Developing a clock system and tuned by 5 buttons - Mode, Switch, Up, Down, and Forcing respectively. When current time goes to setup time, it will trigger relay action for sprinkling water. Sprinkler runs twice at one day. Their actuation start time and sprinkling duration can be set. 16x2 LCD shows the clock and temperature information.
 
