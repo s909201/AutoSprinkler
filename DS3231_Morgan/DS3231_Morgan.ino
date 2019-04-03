@@ -5,7 +5,7 @@ FunctionDesc:
 CreateDate:
 Version:
 Author: Morgan
-ModifyHistory:	2018'6'9
+ModifyHistory:	2019'4'3
 Remark:
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
 #include <DS3231.h>
