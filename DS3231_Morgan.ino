@@ -102,7 +102,7 @@ void loop() // reserved function for Arduino
 // --------------------------------------------------------------
 void TASK_INIT()
 {
-	digitalWrite(RELAY_PIN, HIGH); // Low enable
+	digitalWrite(RELAY_PIN, LOW); // High enable
 
 	// Sprinkle Time
 	SprinkleTime = 30; // unit: sec
@@ -968,7 +968,7 @@ void TASK_RELAY()
 			TASK_RELAY_ACTION_TIMER_START = millis();
 			TASK_RELAY_SHOW_GO = true;
 
-			digitalWrite(RELAY_PIN, LOW);
+			digitalWrite(RELAY_PIN, HIGH);
 			// Set Sprinkle value
 			LongSprinkleTime = (unsigned long)SprinkleTime * (unsigned long)1000;
 
@@ -981,7 +981,7 @@ void TASK_RELAY()
 				lcd.cursorTo(2, 14); //line=2, x=14
 				lcd.printIn("  ");   // erase "GO"
 
-				digitalWrite(RELAY_PIN, HIGH);
+				digitalWrite(RELAY_PIN, LOW);
 
 				TASK_RELAY_SHOW_STEP = 0;
 				TASK_RELAY_SHOW_GO = false;
@@ -996,7 +996,7 @@ void TASK_RELAY()
 			lcd.cursorTo(2, 14); //line=2, x=14
 			lcd.printIn("  ");   // erase "GO"
 
-			digitalWrite(RELAY_PIN, HIGH);
+			digitalWrite(RELAY_PIN, LOW);
 
 			TASK_RELAY_SHOW_STEP = 0;
 			TASK_RELAY_SHOW_GO = false;

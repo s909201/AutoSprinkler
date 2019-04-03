@@ -51,3 +51,7 @@ Developing a clock system and tuned by 5 buttons - Mode, Switch, Up, Down, and F
 ![DS3231 RTC IC (I2C)](https://a.rimg.com.tw/s2/d/29/0c/21446709651724_974_m.jpg)
 
 
+# Revision History
+
+- 20190403 : Based on new relay module, its trigger signal is high enable(the original is low enable). So I modified the function digitalWrite(RELAY_PIN, X) and changed its HIGH/LOW.
+
