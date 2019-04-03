@@ -1,7 +1,10 @@
 # Auto Sprinkler
 Auto Sprinkler Project, made by Arduino
 
-## Last update: 2019.4.3
+# Revision History
+- 20190816 : first version
+- 20190403 : Based on new relay module, its trigger signal is high enable(the original is low enable). So I modified the function digitalWrite(RELAY_PIN, X) and changed its HIGH/LOW.
+
 
 # Abstract
 Developing a clock system and tuned by 5 buttons - Mode, Switch, Up, Down, and Forcing respectively. When current time goes to setup time, it will trigger relay action for sprinkling water. Sprinkler runs twice at one day. Their actuation start time and sprinkling duration can be set. 16x2 LCD shows the clock and temperature information.
@@ -50,8 +53,4 @@ Developing a clock system and tuned by 5 buttons - Mode, Switch, Up, Down, and F
 
 ![DS3231 RTC IC (I2C)](https://a.rimg.com.tw/s2/d/29/0c/21446709651724_974_m.jpg)
 
-
-# Revision History
-
-- 20190403 : Based on new relay module, its trigger signal is high enable(the original is low enable). So I modified the function digitalWrite(RELAY_PIN, X) and changed its HIGH/LOW.
 

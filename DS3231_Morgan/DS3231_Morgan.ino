@@ -14,6 +14,8 @@ Remark:
 //number of lines in display=1
 LCD4Bit_mod lcd = LCD4Bit_mod(2);
 #define RELAY_PIN 3
+#define LCD_BackLight 10
+#define LCD_BL_DURATION (unsigned long)15000 // unit: ms
 
 // millis(): Get System Tick
 
@@ -53,6 +55,9 @@ volatile boolean TASK_RELAY_ACTION_GO;
 volatile unsigned char TASK_RELAY_ACTION_STEP;
 volatile unsigned long TASK_RELAY_ACTION_TIMER_START;
 
+volatile unsigned char TASK_LCD_BL_STEP;
+volatile unsigned long TASK_LCD_BL_TIMER_START;
+
 // Init the DS3231 using the hardware interface
 DS3231 rtc(SDA, SCL);
 
@@ -64,10 +69,12 @@ void TASK_DS3231_NORMAL();
 void TASK_RELAY();
 void TimeIntToStr(byte data, char *output);
 char IntToStr(int data);
+void LCD_BL_ON();
 // --------------------------------------------------------------
 void setup()
 {
 	pinMode(RELAY_PIN, OUTPUT); //we'll use the debug LED to output a heartbeat
+	pinMode(LCD_BackLight, OUTPUT);
 
 	lcd.init();
 	//optionally, now set up our application-specific display settings, overriding whatever the lcd did in lcd.init()
@@ -98,6 +105,7 @@ void loop() // reserved function for Arduino
 	TASK_LCD();
 	TASK_BTN();
 	TASK_RELAY();
+	TASK_LCD_BL();
 }
 // --------------------------------------------------------------
 void TASK_INIT()
@@ -119,6 +127,9 @@ void TASK_INIT()
 	// LCD
 	TASK_LCD_STEP = 0;
 	TASK_LCD_TIMER_START = 0;
+	TASK_LCD_BL_STEP = 0;
+	TASK_LCD_BL_TIMER_START = 0;
+	digitalWrite(LCD_BackLight, HIGH); // High: enable, LOW: disable
 
 	// BTN
 	TASK_BTN_STEP = 0; // start from Normal mode
@@ -134,6 +145,7 @@ void TASK_INIT()
 	T1Min = 50;
 	T2Hour = 17;
 	T2Min = 30;
+
 }
 // --------------------------------------------------------------
 void TASK_DS3231()
@@ -528,6 +540,7 @@ void TASK_LCD()
 					// lcd.cursorTo(2, 0); //line=2, x=0
 					// lcd.printIn(msgs[key]);
 					BTN_No = key + 1;
+					LCD_BL_ON();
 				}
 			}
 
@@ -538,7 +551,41 @@ void TASK_LCD()
 	}
 }
 // --------------------------------------------------------------
+// LCD Back Light Control
+void LCD_BL_ON()
+{
+	digitalWrite(LCD_BackLight, HIGH); // High: enable, LOW: disable
+	TASK_LCD_BL_STEP = 0;
+}
+// --------------------------------------------------------------
+void TASK_LCD_BL()
+{
+	switch (TASK_LCD_BL_STEP)
+	{
+	case 0:
+		TASK_LCD_BL_TIMER_START = millis();
+		TASK_LCD_BL_STEP = 2;
+		break;
 
+	case 2:
+		if ((millis() - TASK_LCD_BL_TIMER_START) > LCD_BL_DURATION)
+		{
+			digitalWrite(LCD_BackLight, LOW); // High: enable, LOW: disable
+			// TASK_LCD_BL_TIMER_START = millis();
+			TASK_LCD_BL_STEP = 99;
+		}
+		break;
+
+	// case 4:
+	// 	if ((millis() - TASK_LCD_BL_TIMER_START) > LCD_BL_DURATION)
+	// 	{
+	// 		digitalWrite(LCD_BackLight, HIGH); // High: enable, LOW: disable
+	// 		TASK_LCD_BL_TIMER_START = millis();
+	// 		TASK_LCD_BL_STEP = 2;
+	// 	}
+	// 	break;
+	}
+}
 // --------------------------------------------------------------
 // Convert ADC value to key number
 int get_key(unsigned int input)
@@ -969,6 +1016,7 @@ void TASK_RELAY()
 			TASK_RELAY_SHOW_GO = true;
 
 			digitalWrite(RELAY_PIN, HIGH);
+			digitalWrite(LCD_BackLight, HIGH); // High: enable, LOW: disable
 			// Set Sprinkle value
 			LongSprinkleTime = (unsigned long)SprinkleTime * (unsigned long)1000;
 
@@ -982,6 +1030,7 @@ void TASK_RELAY()
 				lcd.printIn("  ");   // erase "GO"
 
 				digitalWrite(RELAY_PIN, LOW);
+				digitalWrite(LCD_BackLight, LOW); // High: enable, LOW: disable
 
 				TASK_RELAY_SHOW_STEP = 0;
 				TASK_RELAY_SHOW_GO = false;
@@ -991,20 +1040,6 @@ void TASK_RELAY()
 			}
 			break;
 
-		case 4:
-
-			lcd.cursorTo(2, 14); //line=2, x=14
-			lcd.printIn("  ");   // erase "GO"
-
-			digitalWrite(RELAY_PIN, LOW);
-
-			TASK_RELAY_SHOW_STEP = 0;
-			TASK_RELAY_SHOW_GO = false;
-
-			TASK_RELAY_ACTION_STEP = 0;
-			TASK_RELAY_ACTION_GO = false;
-
-			break;
 		}
 	}
 	// ----------------------------------------------------------
