@@ -2,7 +2,7 @@
 Auto Sprinkler Project, made by Arduino
 
 # Revision History
-- 20190816 : first version
+- 20180816 : first version
 - 20190403 : Based on new relay module, its trigger signal is high enable(the original is low enable). So I modified the function digitalWrite(RELAY_PIN, X) and changed its HIGH/LOW.
 
 
